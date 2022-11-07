@@ -5,23 +5,17 @@
 
 # Latest version is quite old so actually pre-release
 # version actually it may be safey
-%define pre_release 1
+%define snapshot 1
 
 Summary:	A tcl/tk password manager
 Name:		password-%{sname}
 Version:	1.5.3.8
-Release:	0
+Release:	1
 License:	GPLv2+
 Group:		File tools
 URL:		https://github.com/zdia
-%if %{pre_release}
-Source0:	https://github.com/zdia/%{sname}/archive/%{commit}/%{name}-%{commit}.tar.gz
-%else
-Source0:	https://github.com/zdia/%{sname}/archive/v%{version}/%{name}-%{version}.tar.gz
+Source0:	https://github.com/zdia/%{sname}/archive/%{?snapshot:%{commit}}%{!?snapshot:v%{version}}/%{name}-%{?snapshot:%{commit}}%{!?snapshot:%{version}}.tar.gz
 Patch0:		%{name}-1.5.3.7-unbundle_tcllib_uuid_module.patch
-%endif
-BuildArch:	noarch
-
 BuildRequires:	docbook-to-man
 BuildRequires:	imagemagick
 BuildRequires:	librsvg
@@ -32,6 +26,8 @@ Requires:	tcl-tcllib
 Requires:	tcl-tklib
 Requires:	tk
 Requires:	itcl
+
+BuildArch:	noarch
 
 %description
 A tcl/tk password manager.
@@ -51,17 +47,13 @@ A tcl/tk password manager.
 #---------------------------------------------------------------------------
 
 %prep
-%if %{pre_release}
-%setup -q -n %{sname}-%{commit}
-%else
-%setup -q -n %{sname}-%{version}
-%endif
-%autopatch -p1
+%autosetup -p1 -n %{sname}-%{?snapshot:%{commit}}%{!?snapshot:%{version}}
 
 # fix version
-%if %{pre_release}
-	sed -i -e "s|{\$Revision: 1.5.3.7 \$}|\{\$Revision: %{version} pre-release \$}|" sources/gorilla.tcl
-%endif
+sed -i -e "s|{\$Revision: 1.5.3.7 \$}|\{\$Revision: %{version} \$}|" sources/gorilla.tcl
+
+# fix LICESE.txt path
+sed -i -e "s|LICENSE.txt|../doc/%{name}/LICENSE.txt|" sources/gorilla.tcl
 
 # launcher
 cat > %{name}.sh << EOF
@@ -150,3 +142,4 @@ done
 %check
 # .desktop
 desktop-file-validate %{buildroot}%{_datadir}/applications/openmandriva-%{name}.desktop
+
