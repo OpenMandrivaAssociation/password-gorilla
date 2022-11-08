@@ -10,7 +10,7 @@
 Summary:	A tcl/tk password manager
 Name:		password-%{sname}
 Version:	1.5.3.8
-Release:	1
+Release:	2
 License:	GPLv2+
 Group:		File tools
 URL:		https://github.com/zdia
@@ -25,7 +25,6 @@ Requires:	tcl
 Requires:	tcl-tcllib
 Requires:	tcl-tklib
 Requires:	tk
-Requires:	itcl
 
 BuildArch:	noarch
 
@@ -50,7 +49,9 @@ A tcl/tk password manager.
 %autosetup -p1 -n %{sname}-%{?snapshot:%{commit}}%{!?snapshot:%{version}}
 
 # fix version
-sed -i -e "s|{\$Revision: 1.5.3.7 \$}|\{\$Revision: %{version} \$}|" sources/gorilla.tcl
+%if %{snapshot}
+       sed -i -e "s|{\$Revision: 1.5.3.7 \$}|\{\$Revision: %{version} commit: %{commit}\$}|" sources/gorilla.tcl
+%endif
 
 # fix LICESE.txt path
 sed -i -e "s|LICENSE.txt|../doc/%{name}/LICENSE.txt|" sources/gorilla.tcl
