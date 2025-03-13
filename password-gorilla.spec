@@ -10,21 +10,22 @@
 Summary:	A tcl/tk password manager
 Name:		password-%{sname}
 Version:	1.5.3.8
-Release:	2
+Release:	3
 License:	GPLv2+
 Group:		File tools
 URL:		https://github.com/zdia
 Source0:	https://github.com/zdia/%{sname}/archive/%{?snapshot:%{commit}}%{!?snapshot:v%{version}}/%{name}-%{?snapshot:%{commit}}%{!?snapshot:%{version}}.tar.gz
 Patch0:		%{name}-1.5.3.7-unbundle_tcllib_uuid_module.patch
+Patch1:		%{name}-1.5.3.8-tcl9.patch
 BuildRequires:	docbook-to-man
 BuildRequires:	imagemagick
 BuildRequires:	librsvg
 BuildRequires:	tk
 
-Requires:	tcl
+Requires:       tcl(abi) >= %{tcl_version}
+Requires:	tcl-itcl
 Requires:	tcl-tcllib
 Requires:	tcl-tklib
-Requires:	tk
 
 BuildArch:	noarch
 
